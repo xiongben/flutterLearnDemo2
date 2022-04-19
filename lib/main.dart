@@ -90,7 +90,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {
                   Navigator.pushNamed(context, "one_demo");
                 },
-                child: Text("to demo one"))
+                child: Text("to demo one")),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, "two_demo");
+                },
+                child: Text("to demo two"))
           ],
         ),
       ),
