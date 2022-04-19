@@ -14,6 +14,9 @@ class _FirstDemoState extends State<FirstDemo> {
     return Scaffold(
       appBar: AppBar(title: Text("demo one"),),
       body: Container(
+        width: 375.w,
+        height: 100.w,
+        color: Colors.yellow,
         child: Text("demo one"),
       ),
     );
