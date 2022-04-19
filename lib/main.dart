@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:learn_flutter/demoOne/index.dart';
+import 'package:learn_flutter/demoTwo/index.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() {
   runApp(MyApp());
@@ -8,15 +11,24 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+    return ScreenUtilInit(
+        designSize: Size(375, 690),
+        builder: () => MaterialApp(
+          title: 'Flutter Demo',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          routes: {
+            "one_demo": (context) => FirstDemo(),
+            "two_demo": (context) => TwoDemo()
+          },
+          home: MyHomePage(title: 'Flutter Demo Home Page'),
+        )
     );
   }
 }
+
+
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -47,6 +59,11 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Container(
+              color: Colors.red,
+              width: 300.w,
+              height: 100.w,
+            ),
             TurnBox(
               turns: _turns,
               speed: 500,
@@ -68,7 +85,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     _turns -= 0.2;
                   });
                 },
-                child: Text('逆时针旋转1/5圈'))
+                child: Text('逆时针旋转1/5圈')),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, "one_demo");
+                },
+                child: Text("to demo one"))
           ],
         ),
       ),
