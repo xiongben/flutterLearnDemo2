@@ -3,6 +3,7 @@ import 'package:learn_flutter/demoOne/index.dart';
 import 'package:learn_flutter/demoTwo/index.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'demoFour/index.dart';
 import 'demoThree/index.dart';
 
 void main() {
@@ -23,7 +24,8 @@ class MyApp extends StatelessWidget {
           routes: {
             "one_demo": (context) => FirstDemo(),
             "two_demo": (context) => TwoDemo(),
-            "three_demo": (context) => ThreeDemo()
+            "three_demo": (context) => ThreeDemo(),
+            "four_demo": (context) => FourDemo()
           },
           home: MyHomePage(title: 'Flutter Demo Home Page'),
         )
@@ -98,7 +100,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {
                   Navigator.pushNamed(context, "three_demo");
                 },
-                child: Text("to demo three"))
+                child: Text("to demo three")),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, "four_demo");
+                },
+                child: Text("to demo four"))
           ],
         ),
       ),
