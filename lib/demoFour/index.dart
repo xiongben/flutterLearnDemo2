@@ -42,7 +42,11 @@ class _FourDemoState extends State<FourDemo> {
                     });
                   },
                   child: Text("刷新页面"),
-                )
+                ),
+                LayoutLogPrint(
+                  child: Text("test print constrains"),
+                ),
+                StreamComponent()
               ],
             ),
           ),
@@ -128,6 +132,61 @@ class _LinearComponentState extends State<LinearComponent> with SingleTickerProv
           Text(widget.val.toString())
         ],
       ),
+    );
+  }
+}
+
+class LayoutLogPrint<T> extends StatelessWidget {
+
+  final tag;
+  final Widget child;
+
+  const LayoutLogPrint({
+    Key? key,
+    this.tag,
+    required this.child
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+        builder: (_, constrains) {
+          assert(() {
+            print('${tag ?? key ?? child}:$constrains');
+            return true;
+          }());
+          return child;
+        }
+    );
+  }
+}
+
+class StreamComponent extends StatelessWidget {
+  const StreamComponent({Key? key}) : super(key: key);
+
+  Stream<int> counter () {
+    return Stream.periodic(Duration(seconds: 1), (i) {return i;});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      stream: counter(),
+      builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+        if (snapshot.hasError)
+          return Text('Error: ${snapshot.error}');
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+            return Text('没有Stream');
+          case ConnectionState.waiting:
+            return Text('等待数据...');
+          case ConnectionState.active:
+            return Text('active: ${snapshot.data}');
+          case ConnectionState.done:
+            return Text('Stream 已关闭');
+        }
+        return Text("null");
+      },
     );
   }
 }
