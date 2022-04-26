@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:learn_flutter/demoOne/index.dart';
 import 'package:learn_flutter/demoTwo/index.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:learn_flutter/sliverDemo/index.dart';
 
 import 'demoFive/index.dart';
 import 'demoFour/index.dart';
@@ -27,7 +28,8 @@ class MyApp extends StatelessWidget {
             "two_demo": (context) => TwoDemo(),
             "three_demo": (context) => ThreeDemo(),
             "four_demo": (context) => FourDemo(),
-            "five_demo": (context) => FiveDemo()
+            "five_demo": (context) => FiveDemo(),
+            "sliver_demo": (context) => SliverDemo()
           },
           home: MyHomePage(title: 'Flutter Demo Home Page'),
         )
@@ -88,31 +90,41 @@ class _MyHomePageState extends State<MyHomePage> {
                   });
                 },
                 child: Text('逆时针旋转1/5圈')),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, "one_demo");
-                },
-                child: Text("to demo one")),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, "two_demo");
-                },
-                child: Text("to demo two")),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, "three_demo");
-                },
-                child: Text("to demo three")),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, "four_demo");
-                },
-                child: Text("to demo four")),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, "five_demo");
-                },
-                child: Text("to demo five"))
+            Wrap(
+              spacing: 10.w,
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, "one_demo");
+                    },
+                    child: Text("to demo one")),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, "two_demo");
+                    },
+                    child: Text("to demo two")),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, "three_demo");
+                    },
+                    child: Text("to demo three")),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, "four_demo");
+                    },
+                    child: Text("to demo four")),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, "five_demo");
+                    },
+                    child: Text("to demo five")),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, "sliver_demo");
+                    },
+                    child: Text("Demo Sliver"))
+              ],
+            ),
           ],
         ),
       ),
