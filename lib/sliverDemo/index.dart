@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'dart:math';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -44,4 +45,61 @@ class _SliverDemoState extends State<SliverDemo> {
         )
     );
   }
+}
+
+class _SliverFlexibleHeader extends SingleChildRenderObjectWidget {
+
+  final double visibleExtent;
+
+  const _SliverFlexibleHeader({
+    Key? key,
+    required Widget child,
+    this.visibleExtent = 0
+  }): super(key: key, child: child);
+
+  @override
+  RenderObject createRenderObject(BuildContext context) {
+    return _FlexibleHeaderRenderSliver(visibleExtent);
+  }
+
+  @override
+  void updateRenderObject(BuildContext context, _FlexibleHeaderRenderSliver renderObject) {
+    renderObject..visibleExtent = visibleExtent;
+  }
+
+}
+
+
+class _FlexibleHeaderRenderSliver extends RenderSliverSingleBoxAdapter {
+
+  _FlexibleHeaderRenderSliver(double visibleExtent)
+      : _visibleExtent = visibleExtent;
+
+  double _lastOverScroll = 0;
+  double _lastScrollOffset = 0;
+  late double _visibleExtent = 0;
+
+  set visibleExtent(double value) {
+    // 可视长度发生变化，更新状态并重新布局
+    if(_visibleExtent != value) {
+      _lastOverScroll = 0;
+      _visibleExtent = value;
+      markNeedsLayout();
+    }
+  }
+
+  @override
+  void performLayout() {
+    // 滑动距离大于_visibleExtent时则表示子节点已经在屏幕之外了
+    if(child == null || (constraints.scrollOffset > _visibleExtent)) {
+      geometry = SliverGeometry(scrollExtent: _visibleExtent);
+      return;
+    }
+
+    double overScroll = constraints.overlap < 0 ? constraints.overlap.abs() : 0;
+    var scrollOffset = constraints.scrollOffset;
+
+
+  }
+
 }
