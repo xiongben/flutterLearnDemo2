@@ -78,6 +78,7 @@ class _FlexibleHeaderRenderSliver extends RenderSliverSingleBoxAdapter {
   double _lastOverScroll = 0;
   double _lastScrollOffset = 0;
   late double _visibleExtent = 0;
+  ScrollDirection _direction = ScrollDirection.idle;
 
   set visibleExtent(double value) {
     // 可视长度发生变化，更新状态并重新布局
@@ -99,7 +100,113 @@ class _FlexibleHeaderRenderSliver extends RenderSliverSingleBoxAdapter {
     double overScroll = constraints.overlap < 0 ? constraints.overlap.abs() : 0;
     var scrollOffset = constraints.scrollOffset;
 
+    // 根据前后的overScroll值之差确定列表滑动方向。注意，不能直接使用 constraints.userScrollDirection，
+   // 这是因为该参数只表示用户滑动操作的方向。比如当我们下拉超出边界时，然后松手，此时列表会弹回，即列表滚动
+   // 方向是向上，而此时用户操作已经结束，ScrollDirection 的方向是上一次的用户滑动方向(向下)，这是便有问题。
+    var distance = overScroll > 0
+        ? overScroll - _lastOverScroll
+        : _lastScrollOffset - scrollOffset;
+    _lastOverScroll = overScroll;
+    _lastScrollOffset = scrollOffset;
 
+    if (constraints.userScrollDirection == ScrollDirection.idle) {
+      _direction = ScrollDirection.idle;
+      _lastOverScroll = 0;
+    } else if (distance > 0) {
+      _direction = ScrollDirection.forward;
+    } else if (distance < 0) {
+      _direction = ScrollDirection.reverse;
+    }
+
+    // 在Viewport中顶部的可视空间为该 Sliver 可绘制的最大区域。
+    // 1. 如果Sliver已经滑出可视区域则 constraints.scrollOffset 会大于 _visibleExtent，
+    //    这种情况我们在一开始就判断过了。
+    // 2. 如果我们下拉超出了边界，此时 overScroll>0，scrollOffset 值为0，所以最终的绘制区域为
+    //    _visibleExtent + overScroll.
+
+    double paintExtent = _visibleExtent + overScroll - constraints.scrollOffset;
+    // 绘制高度不超过最大可绘制空间
+    paintExtent = min(paintExtent, constraints.remainingPaintExtent);
+
+    child!.layout(
+      ExtraInfoBoxConstraints(_direction, constraints.asBoxConstraints(maxExtent: paintExtent)),
+      parentUsesSize: false
+    );
+    //最大为_visibleExtent，最小为 0
+    double layoutExtent = min(_visibleExtent, paintExtent);
+
+    geometry = SliverGeometry(
+      scrollExtent: layoutExtent,
+      paintOrigin: -overScroll, // 绘制的坐标原点，相对于自身布局位置
+      paintExtent: paintExtent, // 可视区域中的绘制长度
+      maxPaintExtent: paintExtent, //最大绘制长度
+      layoutExtent: layoutExtent
+    );
+  }
+}
+
+typedef SliverFlexibleHeaderBuilder = Widget Function(
+      BuildContext context,
+      double maxExtent,
+      ScrollDirection direction
+    );
+
+class SliverFlexibleHeader extends StatelessWidget {
+  const SliverFlexibleHeader({
+    Key? key,
+    this.visibleExtent = 0,
+    required this.direction,
+    required this.builder
+  }): super(key: key);
+
+  final SliverFlexibleHeaderBuilder builder;
+  final double visibleExtent;
+  final ScrollDirection direction;
+
+  @override
+  Widget build(BuildContext context) {
+    return _SliverFlexibleHeader(
+      visibleExtent: visibleExtent,
+      child: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          return builder(
+            context,
+            constraints.maxHeight,
+            (constraints as ExtraInfoBoxConstraints<ScrollDirection>).extra,
+          );
+        },
+      ),
+    );
+  }
+}
+
+class ExtraInfoBoxConstraints<T> extends BoxConstraints {
+  ExtraInfoBoxConstraints(
+      this.extra,
+      BoxConstraints constraints,
+      ) : super(
+    minWidth: constraints.minWidth,
+    minHeight: constraints.minHeight,
+    maxWidth: constraints.maxWidth,
+    maxHeight: constraints.maxHeight,
+  );
+
+  // 额外的信息
+  final T extra;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is ExtraInfoBoxConstraints &&
+        super == other &&
+        other.extra == extra;
   }
 
+  @override
+  int get hashCode {
+    return hashValues(super.hashCode, extra);
+  }
+  // 我们重载了“==”运算符，这是因为 Flutter 在布局期间在特定的情况下会检测前后两次 constraints 是否相等然后来决定是否需要重新布局，
+  // 所以我们需要重载“==”运算符，否则可能会在最大/最小宽高不变但 extra 发生变化时不会触发 child 重新布局，这时也就不会触发 LayoutBuilder，
+  // 这明显不符合预期，因为我们希望 extra 发生变化时，会触发 LayoutBuilder 重新构建 child。
 }
