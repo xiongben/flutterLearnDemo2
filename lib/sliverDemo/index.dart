@@ -29,25 +29,28 @@ class SliverDemo extends StatefulWidget {
 class _SliverDemoState extends State<SliverDemo> {
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+    return Scaffold(
+      appBar:AppBar(title: Text("demo"),),
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         slivers: [
-        //我们需要实现的 SliverFlexibleHeader 组件
-        SliverFlexibleHeader(
-        visibleExtent: 200, // 初始状态在列表中占用的布局高度
-        // 为了能根据下拉状态变化来定制显示的布局，我们通过一个 builder 来动态构建布局。
-        builder: (context, availableHeight, direction) {
-      return GestureDetector(
-        onTap: () => print('tap'), //测试是否可以响应事件
-        child: Container(
-          width: double.infinity,
-          height: 300.w,
-          color: Colors.red,
-        )
-      );
-    },
-    ),
-    ],
+          //我们需要实现的 SliverFlexibleHeader 组件
+          SliverFlexibleHeader(
+            visibleExtent: 200, // 初始状态在列表中占用的布局高度
+            // 为了能根据下拉状态变化来定制显示的布局，我们通过一个 builder 来动态构建布局。
+            builder: (context, availableHeight, direction) {
+              return GestureDetector(
+                  onTap: () => print('tap'), //测试是否可以响应事件
+                  child: Container(
+                    width: double.infinity,
+                    height: 300.w,
+                    color: Colors.red,
+                  )
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }
