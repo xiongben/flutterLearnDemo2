@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:learn_flutter/demoOne/index.dart';
 import 'package:learn_flutter/demoTwo/index.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,6 +11,8 @@ import 'demoFour/index.dart';
 import 'demoThree/index.dart';
 
 void main() {
+  // debugPaintSizeEnabled = true; //可视化组件可视边框
+  // debugPaintLayerBordersEnabled = true; //调试中组件可视化边界
   runApp(MyApp());
 }
 

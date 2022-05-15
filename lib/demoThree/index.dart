@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import'package:flutter/rendering.dart';
 
 
 class ThreeDemo extends StatefulWidget {
@@ -22,6 +23,28 @@ class _ThreeDemoState extends State<ThreeDemo> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
              TextInput(),
+             SizedBox(height: 20.w,),
+             InkWell(
+               child: Text("print tree"),
+               onTap: () {
+                 debugDumpApp();
+               },
+             ),
+            SizedBox(height: 20.w,),
+            InkWell(
+              child: Text("print widget tree"),
+              onTap: () {
+                debugDumpApp();
+              },
+            ),
+            SizedBox(height: 20.w,),
+            InkWell(
+              child: Text("print layer tree"),
+              onTap: () {
+                debugDumpLayerTree();
+              },
+            ),
+            WrapDemo()
           ],
         ),
       ),
@@ -48,7 +71,7 @@ class _TextInputState extends State<TextInput> {
       padding: EdgeInsets.symmetric(horizontal: 15.w),
       child: TextField(
         controller: _controller,
-        autofocus: true,
+        autofocus: false,
         style: TextStyle(color: Colors.red),
         cursorColor: Colors.red,
         // obscureText: true,
@@ -68,6 +91,45 @@ class _TextInputState extends State<TextInput> {
         onChanged: (v) {
            print(v);
         }
+      ),
+    );
+  }
+}
+
+class WrapDemo extends StatelessWidget {
+  const WrapDemo({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      color: Colors.yellow,
+      child: Wrap(
+        spacing: 15.w,
+        runSpacing: 15.w,
+        alignment: WrapAlignment.center,
+        children: [
+          Chip(
+            avatar: CircleAvatar(backgroundColor: Colors.blue, child: Text("A"),),
+            label: Text("jack li"),
+          ),
+          Chip(
+            avatar: CircleAvatar(backgroundColor: Colors.blue, child: Text("B"),),
+            label: Text("jack li q"),
+          ),
+          Chip(
+            avatar: CircleAvatar(backgroundColor: Colors.blue, child: Text("C"),),
+            label: Text("jack li tom"),
+          ),
+          Chip(
+            avatar: CircleAvatar(backgroundColor: Colors.blue, child: Text("D"),),
+            label: Text("jack lick"),
+          ),
+          Chip(
+            avatar: CircleAvatar(backgroundColor: Colors.blue, child: Text("E"),),
+            label: Text("jack lia"),
+          ),
+        ],
       ),
     );
   }
