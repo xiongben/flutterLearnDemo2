@@ -71,8 +71,35 @@ class _ChangeNotifierProviderState<T extends ChangeNotifier> extends State<Chang
   }
 
   @override
+  void didUpdateWidget(covariant ChangeNotifierProvider<T> oldWidget) {
+    // TODO: implement didUpdateWidget
+    if (widget.data != oldWidget.data) {
+      oldWidget.data.removeListener(update);
+      widget.data.addListener(update);
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    widget.data.addListener(update);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    widget.data.removeListener(update);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container();
+    return InheritedProvider<T>(
+      data: widget.data,
+      child: widget.child,
+    );
   }
 }
 
