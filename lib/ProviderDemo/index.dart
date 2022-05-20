@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
@@ -58,6 +60,12 @@ class ChangeNotifierProvider<T extends ChangeNotifier> extends StatefulWidget {
     required this.child,
   }) : super(key: key);
 
+  static T of<T>(BuildContext context) {
+    // final type = _typeOf<InheritedProvider<T>>();
+    final provider = context.dependOnInheritedWidgetOfExactType<InheritedProvider<T>>();
+    return provider!.data;
+  }
+
   @override
   _ChangeNotifierProviderState<T> createState() => _ChangeNotifierProviderState();
 }
@@ -103,4 +111,59 @@ class _ChangeNotifierProviderState<T extends ChangeNotifier> extends State<Chang
   }
 }
 
+class Item {
+  Item(this.price, this.count);
+  double price;
+  int count;
+}
 
+class CartModel extends ChangeNotifier {
+
+  final List<Item> _items = [];
+
+  UnmodifiableListView<Item> get items => UnmodifiableListView(_items);
+
+  double get totalPrice => _items.fold(0, (value, item) => value + item.count * item.price);
+
+  void add(Item item) {
+    _items.add(item);
+    notifyListeners();
+  }
+}
+
+class ProviderRoute extends StatefulWidget {
+  const ProviderRoute({Key? key}) : super(key: key);
+
+  @override
+  State<ProviderRoute> createState() => _ProviderRouteState();
+}
+
+class _ProviderRouteState extends State<ProviderRoute> {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ChangeNotifierProvider<CartModel>(
+        data: CartModel(),
+        child: Builder(builder: (context) {
+          return Column(
+            children: <Widget>[
+              Builder(builder: (context) {
+                var cart = ChangeNotifierProvider.of<CartModel>(context);
+                return Text("total Price: ${cart.totalPrice}");
+              }),
+              Builder(builder: (context) {
+                print('========');
+                return ElevatedButton(
+                  child: Text('添加商品'),
+                  onPressed: () {
+                    ChangeNotifierProvider.of<CartModel>(context).add(Item(20.0, 1));
+                  },
+                );
+              })
+            ],
+          );
+        },),
+      ),
+    );
+  }
+}
