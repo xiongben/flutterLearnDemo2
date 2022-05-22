@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:html';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,8 @@ class ProviderDemo extends StatefulWidget {
 class _ProviderDemoState extends State<ProviderDemo> {
   @override
   Widget build(BuildContext context) {
+    int count = 0;
+
     return Scaffold(
         appBar: AppBar(title: Text("demo five"),),
         body: SafeArea(
@@ -27,6 +30,28 @@ class _ProviderDemoState extends State<ProviderDemo> {
               children: [
                 Text("Provider Demo"),
                 SizedBox(height: 50.w,),
+                Center(
+                  child: ShareDataWidget(
+                    data: count,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 20.w),
+                          child: _TestWidget(),
+                        ),
+                        TextButton(
+                          onPressed: (){
+                            setState(() {
+                              count+=1;
+                            });
+                          },
+                          child: Text('Increment', style: TextStyle(color: Colors.blue),),
+                        )
+                      ],
+                    ),
+                  ),
+                )
               ],
             ),
           ),
@@ -165,5 +190,48 @@ class _ProviderRouteState extends State<ProviderRoute> {
         },),
       ),
     );
+  }
+}
+
+
+// InheritedWidget Demo
+
+class ShareDataWidget extends InheritedWidget {
+  final int data;
+
+  ShareDataWidget({
+    Key? key,
+    required this.data,
+    required Widget child,
+  }):super(key: key, child: child);
+
+  static ShareDataWidget? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<ShareDataWidget>();
+  }
+  //该回调决定当data发生变化时，是否通知子树中依赖data的Widget重新build
+  @override
+  bool updateShouldNotify(ShareDataWidget old) {
+    return old.data != data;
+  }
+}
+
+class _TestWidget extends StatefulWidget {
+  const _TestWidget({Key? key}) : super(key: key);
+
+  @override
+  State<_TestWidget> createState() => _TestWidgetState();
+}
+
+class _TestWidgetState extends State<_TestWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Text(ShareDataWidget.of(context)!.data.toString());
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    print("Dependencies change");
   }
 }
