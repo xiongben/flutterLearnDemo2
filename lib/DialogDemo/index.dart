@@ -13,6 +13,9 @@ class DialogDemo extends StatefulWidget {
 }
 
 class _DialogDemoState extends State<DialogDemo> {
+
+  bool _withTree = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,11 +34,88 @@ class _DialogDemoState extends State<DialogDemo> {
                     testDialog();
                   },
                   child: Text("test customDialog"),
+                ),
+                SizedBox(height: 30.w,),
+                InkWell(
+                  onTap: () {
+                    testDialogDataDemo();
+                  },
+                  child: Text("test dialog data demo"),
+                ),
+                SizedBox(height: 40.w,),
+                StatefulBuilder(
+                  builder: (context, _setState) {
+                    return Checkbox(
+                        value: _withTree,
+                        onChanged: (value) {
+                          _setState((){
+                            _withTree = !_withTree;
+                          });
+                        }
+                    );
+                  },
                 )
               ],
             ),
           ),
         )
+    );
+  }
+
+  testDialogDataDemo () {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("提示"),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text("您确定要删除当前文件吗?"),
+              Row(
+                children: <Widget>[
+                  Text("同时删除子目录？"),
+                  Builder(
+                    builder: (BuildContext context) {
+                      return Checkbox(
+                          value: _withTree,
+                          onChanged: (value) {
+                            (context as Element).markNeedsBuild();
+                            _withTree = !_withTree;
+                          }
+                      );
+                    },
+                  ),
+                  SizedBox(height: 30.w,),
+                  Text("无法被选中啊!"),
+                  Checkbox(
+                      value: _withTree,
+                      onChanged: (value) {
+                        setState(() {
+                          _withTree = !_withTree;
+                        });
+                      }
+                  )
+                ],
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text("取消"),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            TextButton(
+              child: Text("删除"),
+              onPressed: () {
+                // 执行删除操作
+                Navigator.of(context).pop(_withTree);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -45,7 +125,13 @@ class _DialogDemoState extends State<DialogDemo> {
         builder: (context) {
           return AlertDialog(
             title: Text("提示"),
-            content: Text("你确定要删除当前文件吗"),
+            content: Container(
+              child: Column(
+                children: [
+                  Text("你确定要删除当前文件吗"),
+                ],
+              ),
+            ),
             actions: [
               TextButton(
                   onPressed: () => Navigator.of(context).pop(),
@@ -104,4 +190,24 @@ Widget _buildMaterialDialogTransitions(
     ),
     child: child,
   );
+}
+
+
+class StatefulBuilder extends StatefulWidget {
+  final StatefulWidgetBuilder builder;
+
+  const StatefulBuilder({
+    Key? key,
+    required this.builder
+  }) : super(key: key);
+
+  @override
+  State<StatefulBuilder> createState() => _StatefulBuilderState();
+}
+
+class _StatefulBuilderState extends State<StatefulBuilder> {
+  @override
+  Widget build(BuildContext context) {
+    return widget.builder(context, setState);
+  }
 }
