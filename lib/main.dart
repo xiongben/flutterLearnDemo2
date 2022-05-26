@@ -5,6 +5,7 @@ import 'package:learn_flutter/ProviderDemo/index.dart';
 import 'package:learn_flutter/demoOne/index.dart';
 import 'package:learn_flutter/demoTwo/index.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:learn_flutter/modelDemo/index.dart';
 import 'package:learn_flutter/pointDemo/index.dart';
 import 'package:learn_flutter/sliverDemo/index.dart';
 
@@ -38,7 +39,8 @@ class MyApp extends StatelessWidget {
             "sliver_demo": (context) => SliverDemo(),
             "pointer_demo": (context) => PointerDemo(),
             "provide_demo": (context) => ProviderDemo(),
-            "dialog_demo": (context) => DialogDemo()
+            "dialog_demo": (context) => DialogDemo(),
+            "model_demo": (context) => ModelTestDemo()
           },
           home: MyHomePage(title: 'Flutter Demo Home Page'),
         )
@@ -146,7 +148,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: () {
                       Navigator.pushNamed(context, "dialog_demo");
                     },
-                    child: Text("Demo Dialog"))
+                    child: Text("Demo Dialog")),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, "model_demo");
+                    },
+                    child: Text("Demo model"))
               ],
             ),
           ],

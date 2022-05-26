@@ -42,7 +42,14 @@ class _DialogDemoState extends State<DialogDemo> {
                   },
                   child: Text("test dialog data demo"),
                 ),
-                SizedBox(height: 40.w,),
+                SizedBox(height: 30.w,),
+                InkWell(
+                  onTap: () {
+                    showaLoadingDialog();
+                  },
+                  child: Text("test loading dialog demo"),
+                ),
+                SizedBox(height: 30.w,),
                 StatefulBuilder(
                   builder: (context, _setState) {
                     return Checkbox(
@@ -116,6 +123,33 @@ class _DialogDemoState extends State<DialogDemo> {
           ],
         );
       },
+    );
+  }
+
+  // 自定义弹窗宽度
+  showaLoadingDialog () {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return UnconstrainedBox(
+            constrainedAxis: Axis.vertical,
+            child: SizedBox(
+              width: 280.w,
+              child: AlertDialog(
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircularProgressIndicator(),
+                    Padding(
+                      padding: EdgeInsets.only(top: 26.w),
+                      child: Text("正在加载中，，，"),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
     );
   }
 
