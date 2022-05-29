@@ -16,7 +16,7 @@ class _EventDemoState extends State<EventDemo> {
   PointerEvent? _event;
   bool _testStatus = false;
   int _counter = 0;
-  ValueNotifier<int> _notifier = ValueNotifier<int>(0);
+  ValueNotifier<int> _notifier = ValueNotifier<int>(0);  //监听变量
   
   void _incrementCounter() {
     _counter++;
