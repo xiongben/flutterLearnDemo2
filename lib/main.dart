@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:learn_flutter/DialogDemo/index.dart';
+import 'package:learn_flutter/EventDemo/index.dart';
 import 'package:learn_flutter/ProviderDemo/index.dart';
 import 'package:learn_flutter/WaterMarkDemo/index.dart';
 import 'package:learn_flutter/demoOne/index.dart';
@@ -42,7 +43,8 @@ class MyApp extends StatelessWidget {
             "provide_demo": (context) => ProviderDemo(),
             "dialog_demo": (context) => DialogDemo(),
             "model_demo": (context) => ModelTestDemo(),
-            "water_mark_demo": (context) => WaterMarkDemo()
+            "water_mark_demo": (context) => WaterMarkDemo(),
+            "event_demo": (context) => EventDemo()
           },
           home: MyHomePage(title: 'Flutter Demo Home Page'),
         )
@@ -160,7 +162,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: () {
                       Navigator.pushNamed(context, "water_mark_demo");
                     },
-                    child: Text("WaterMark model"))
+                    child: Text("WaterMark model")),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, "event_demo");
+                    },
+                    child: Text("event demo"))
               ],
             ),
           ],
