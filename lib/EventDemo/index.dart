@@ -17,10 +17,24 @@ class _EventDemoState extends State<EventDemo> {
   bool _testStatus = false;
   int _counter = 0;
   ValueNotifier<int> _notifier = ValueNotifier<int>(0);  //监听变量
+  ComplicatedObjectNotifier _notifier2 = ComplicatedObjectNotifier(ComplicatedObject(number: 0, title: "标题"));
+  Widget _content = Center(
+    child: Text('这里是内容，，，，，，，'),
+  );
   
   void _incrementCounter() {
     _counter++;
     _notifier.value++;
+  }
+
+  void _incrementCounter2() {
+   _notifier2.setTitle('又是新标题');
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
   }
 
 
@@ -48,6 +62,23 @@ class _EventDemoState extends State<EventDemo> {
                 Text(_counter.toString()),
                 ElevatedButton(
                     onPressed: _incrementCounter,
+                    child: Text("add")
+                ),
+                Text("================="),
+                ValueListenableBuilder(
+                    valueListenable: _notifier2,
+                    child: _content,
+                    builder: (BuildContext context, ComplicatedObject value, child) {
+                      return Column(
+                        children: [
+                          Text('title:${value.title};number:${value.number}'),
+                          child as Widget,
+                        ],
+                      );
+                    }
+                ),
+                ElevatedButton(
+                    onPressed: _incrementCounter2,
                     child: Text("add")
                 ),
                 SizedBox(height: 30.w,),
@@ -88,5 +119,22 @@ class _EventDemoState extends State<EventDemo> {
           ),
         )
     );
+  }
+}
+
+class ComplicatedObject {
+  int number;
+  String title;
+
+  ComplicatedObject({required this.number, required this.title});
+}
+
+//自定义监听对象属性
+class ComplicatedObjectNotifier extends ValueNotifier<ComplicatedObject> {
+  ComplicatedObjectNotifier(ComplicatedObject object):super(object);
+
+  void setTitle(String newTitle) {
+    value.title = newTitle;
+    notifyListeners(); //核心语句
   }
 }
