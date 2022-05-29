@@ -15,6 +15,14 @@ class _EventDemoState extends State<EventDemo> {
 
   PointerEvent? _event;
   bool _testStatus = false;
+  int _counter = 0;
+  ValueNotifier<int> _notifier = ValueNotifier<int>(0);
+  
+  void _incrementCounter() {
+    _counter++;
+    _notifier.value++;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +37,22 @@ class _EventDemoState extends State<EventDemo> {
               children: [
                 Text("event Demo"),
                 SizedBox(height: 30.w,),
+                ValueListenableBuilder(
+                  valueListenable: _notifier,
+                  builder: (BuildContext context, int value, _) {
+                    return Container(
+                      child: Text('you have pushed the button this many times:$value'),
+                    );
+                  },
+                ),
+                Text(_counter.toString()),
+                ElevatedButton(
+                    onPressed: _incrementCounter,
+                    child: Text("add")
+                ),
+                SizedBox(height: 30.w,),
                 Text(_testStatus.toString()),
-                TextButton(
+                ElevatedButton(
                     onPressed: () {
                       print(_testStatus);
                       setState(() {
