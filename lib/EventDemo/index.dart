@@ -46,76 +46,80 @@ class _EventDemoState extends State<EventDemo> {
           child: Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(horizontal: 15.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text("event Demo"),
-                SizedBox(height: 30.w,),
-                ValueListenableBuilder(
-                  valueListenable: _notifier,
-                  builder: (BuildContext context, int value, _) {
-                    return Container(
-                      child: Text('you have pushed the button this many times:$value'),
-                    );
-                  },
-                ),
-                Text(_counter.toString()),
-                ElevatedButton(
-                    onPressed: _incrementCounter,
-                    child: Text("add")
-                ),
-                Text("================="),
-                ValueListenableBuilder(
-                    valueListenable: _notifier2,
-                    child: _content,
-                    builder: (BuildContext context, ComplicatedObject value, child) {
-                      return Column(
-                        children: [
-                          Text('title:${value.title};number:${value.number}'),
-                          child as Widget,
-                        ],
-                      );
-                    }
-                ),
-                ElevatedButton(
-                    onPressed: _incrementCounter2,
-                    child: Text("add")
-                ),
-                SizedBox(height: 30.w,),
-                Text(_testStatus.toString()),
-                ElevatedButton(
-                    onPressed: () {
-                      print(_testStatus);
-                      setState(() {
-                        _testStatus = !_testStatus;
-                      });
-                      print(_testStatus);
-                    },
-                    child: Text("testFn")
-                ),
+            child: _Scale(),
 
-                SizedBox(height: 30.w,),
-                Listener(
-                  child: Container(
-                    alignment: Alignment.center,
-                    color: Colors.blue,
-                    width: 300.w,
-                    height: 150.w,
-                    child: Text(
-                      "${_event?.localPosition ?? '位置'}",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  onPointerDown: (PointerDownEvent event) {
-                    setState(() {
-                      _event = event;
-                    });
-                  },
-                  onPointerMove: (PointerMoveEvent event) => setState(()=>_event = event),
-                  onPointerUp: (PointerUpEvent event) => setState(()=>_event = event),
-                )
-              ],
-            ),
+            // child: _DragVertical(),
+
+            // child: Column(
+            //   crossAxisAlignment: CrossAxisAlignment.center,
+            //   children: [
+            //     Text("event Demo"),
+            //     SizedBox(height: 30.w,),
+            //     ValueListenableBuilder(
+            //       valueListenable: _notifier,
+            //       builder: (BuildContext context, int value, _) {
+            //         return Container(
+            //           child: Text('you have pushed the button this many times:$value'),
+            //         );
+            //       },
+            //     ),
+            //     Text(_counter.toString()),
+            //     ElevatedButton(
+            //         onPressed: _incrementCounter,
+            //         child: Text("add")
+            //     ),
+            //     Text("================="),
+            //     ValueListenableBuilder(
+            //         valueListenable: _notifier2,
+            //         child: _content,
+            //         builder: (BuildContext context, ComplicatedObject value, child) {
+            //           return Column(
+            //             children: [
+            //               Text('title:${value.title};number:${value.number}'),
+            //               child as Widget,
+            //             ],
+            //           );
+            //         }
+            //     ),
+            //     ElevatedButton(
+            //         onPressed: _incrementCounter2,
+            //         child: Text("add")
+            //     ),
+            //     SizedBox(height: 30.w,),
+            //     Text(_testStatus.toString()),
+            //     ElevatedButton(
+            //         onPressed: () {
+            //           print(_testStatus);
+            //           setState(() {
+            //             _testStatus = !_testStatus;
+            //           });
+            //           print(_testStatus);
+            //         },
+            //         child: Text("testFn")
+            //     ),
+            //
+            //     SizedBox(height: 30.w,),
+            //     Listener(
+            //       child: Container(
+            //         alignment: Alignment.center,
+            //         color: Colors.blue,
+            //         width: 300.w,
+            //         height: 150.w,
+            //         child: Text(
+            //           "${_event?.localPosition ?? '位置'}",
+            //           style: TextStyle(color: Colors.white),
+            //         ),
+            //       ),
+            //       onPointerDown: (PointerDownEvent event) {
+            //         setState(() {
+            //           _event = event;
+            //         });
+            //       },
+            //       onPointerMove: (PointerMoveEvent event) => setState(()=>_event = event),
+            //       onPointerUp: (PointerUpEvent event) => setState(()=>_event = event),
+            //     ),
+            //   ],
+            // ),
           ),
         )
     );
@@ -136,5 +140,63 @@ class ComplicatedObjectNotifier extends ValueNotifier<ComplicatedObject> {
   void setTitle(String newTitle) {
     value.title = newTitle;
     notifyListeners(); //核心语句
+  }
+}
+
+//单一方向拖动
+class _DragVertical extends StatefulWidget {
+  const _DragVertical({Key? key}) : super(key: key);
+
+  @override
+  State<_DragVertical> createState() => _DragVerticalState();
+}
+
+class _DragVerticalState extends State<_DragVertical> {
+  double _top = 0.0;
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned(
+          top: _top,
+          child: GestureDetector(
+            child: CircleAvatar(child: Text("A"),),
+            onVerticalDragUpdate: (DragUpdateDetails details) {
+              setState(() {
+                _top += details.delta.dy;
+              });
+            },
+          ),
+        )
+      ],
+    );
+  }
+}
+
+//缩放
+class _Scale extends StatefulWidget {
+  const _Scale({Key? key}) : super(key: key);
+
+  @override
+  State<_Scale> createState() => _ScaleState();
+}
+
+class _ScaleState extends State<_Scale> {
+  double _width = 200.0;
+  double _height = 200.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: GestureDetector(
+        child: Container(width: _width, height: _height,color: Colors.red,),
+        onScaleUpdate: (ScaleUpdateDetails details) {
+          setState(() {
+            _width = 200*details.scale.clamp(.8, 10.0);
+            _height = 200*details.scale.clamp(.8, 10.0);
+          });
+        },
+      ),
+    );
   }
 }
