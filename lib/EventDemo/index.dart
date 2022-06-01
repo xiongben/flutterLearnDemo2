@@ -46,7 +46,10 @@ class _EventDemoState extends State<EventDemo> {
           child: Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(horizontal: 15.w),
-            child: _Scale(),
+
+            child: NotificationRoute(),
+
+            // child: _Scale(),
 
             // child: _DragVertical(),
 
@@ -196,6 +199,50 @@ class _ScaleState extends State<_Scale> {
             _height = 200*details.scale.clamp(.8, 10.0);
           });
         },
+      ),
+    );
+  }
+}
+
+class MyNotification extends Notification {
+  MyNotification(this.msg);
+  final String msg;
+}
+
+class NotificationRoute extends StatefulWidget {
+  const NotificationRoute({Key? key}) : super(key: key);
+
+  @override
+  State<NotificationRoute> createState() => _NotificationRouteState();
+}
+
+class _NotificationRouteState extends State<NotificationRoute> {
+
+  String _msg = "";
+
+  @override
+  Widget build(BuildContext context) {
+    return NotificationListener<MyNotification>(
+      onNotification: (notification) {
+        setState(() {
+          _msg += notification.msg + " ";
+        });
+        return true;
+      },
+      child: Column(
+        children: [
+          Container(
+            child: Builder(
+              builder: (context) {
+                return ElevatedButton(
+                  onPressed: () => MyNotification("Hi").dispatch(context),
+                  child: Text('Send Notification'),
+                );
+              },
+            ),
+          ),
+          Text(_msg),
+        ],
       ),
     );
   }
