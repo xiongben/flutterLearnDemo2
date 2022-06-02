@@ -1,3 +1,4 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
@@ -13,6 +14,7 @@ class EventDemo extends StatefulWidget {
 
 class _EventDemoState extends State<EventDemo> {
 
+  String _busText = "init test";
   PointerEvent? _event;
   bool _testStatus = false;
   int _counter = 0;
@@ -35,6 +37,13 @@ class _EventDemoState extends State<EventDemo> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    bus.on("testbus", (args) {
+      print('============');
+      print(args);
+      this.setState(() {
+        _busText = args;
+      });
+    });
   }
 
 
@@ -47,7 +56,20 @@ class _EventDemoState extends State<EventDemo> {
             width: double.infinity,
             padding: EdgeInsets.symmetric(horizontal: 15.w),
 
-            child: NotificationRoute(),
+            child: Column(
+              children: [
+              ElevatedButton(
+                      onPressed: () {
+                        bus.emit("testbus",'this is test mess');
+                      },
+                      child: Text("add")
+                  ),
+                SizedBox(height: 30.w,),
+                Text(_busText)
+              ],
+            ),
+
+            // child: NotificationRoute(),
 
             // child: _Scale(),
 
@@ -247,3 +269,41 @@ class _NotificationRouteState extends State<NotificationRoute> {
     );
   }
 }
+
+typedef void EventCallback(args);
+
+class EventBus {
+  EventBus._internal();
+
+  static EventBus _singleton = EventBus._internal();
+
+  factory EventBus()=>_singleton;
+
+  final _emap = Map<Object, List<EventCallback>?>();
+
+  void on(eventName, EventCallback f) {
+    _emap[eventName] ??= <EventCallback>[];
+    _emap[eventName]!.add(f);
+  }
+
+  void off(eventName, [EventCallback? f]) {
+    var list = _emap[eventName];
+    if(eventName == null || list == null) return;
+    if(f == null){
+      _emap[eventName] = null;
+    }else{
+      list.remove(f);
+    }
+  }
+
+  void emit(eventName, [arg]) {
+    var list = _emap[eventName];
+    if(list == null) return;
+    int len = list.length - 1;
+    for(var i = len; i > -1; --i) {
+      list[i](arg);
+    }
+  }
+}
+
+var bus = EventBus();
