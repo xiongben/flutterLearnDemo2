@@ -35,15 +35,13 @@ class _EventDemoState extends State<EventDemo> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
     bus.on("testbus", (args) {
-      print('============');
-      print(args);
       this.setState(() {
         _busText = args;
       });
     });
+    // TODO: implement initState
+    super.initState();
   }
 
 
