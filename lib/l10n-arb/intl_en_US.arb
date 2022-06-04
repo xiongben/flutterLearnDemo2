@@ -1,12 +1,12 @@
 {
   "@@last_modified": "2022-06-03T22:24:34.273035",
-  "title": "Flutter 应用",
+  "title": "Flutter APP",
   "@title": {
-    "description": "给demo应用的标题",
+    "description": "Title for the Demo application",
     "type": "text",
     "placeholders_order": [],
     "placeholders": {}
   },
-  "title1": "这是标题一",
-  "title2": "这是标题二"
+  "title1": "this is title one",
+  "title2": "this is title two"
 }
