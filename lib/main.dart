@@ -10,10 +10,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:learn_flutter/modelDemo/index.dart';
 import 'package:learn_flutter/pointDemo/index.dart';
 import 'package:learn_flutter/sliverDemo/index.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'demoFive/index.dart';
 import 'demoFour/index.dart';
 import 'demoThree/index.dart';
+import 'generated/l10n.dart';
 
 void main() {
   // debugPaintSizeEnabled = true; //可视化组件可视边框
@@ -32,6 +34,13 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
+          supportedLocales: S.delegate.supportedLocales,
+          localizationsDelegates: [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
           routes: {
             "one_demo": (context) => FirstDemo(),
             "two_demo": (context) => TwoDemo(),
@@ -83,6 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Text(S.of(context).title('ddd')),
             TurnBox(
               turns: _turns,
               speed: 500,
