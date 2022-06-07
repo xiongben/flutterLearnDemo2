@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
@@ -11,6 +12,26 @@ class ThemeDemo extends StatefulWidget {
 }
 
 class _ThemeDemoState extends State<ThemeDemo> {
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
+  }
+
+  void getData () async {
+    var dio = Dio();
+    var params = {
+      'appid': 43632387,
+      'appsecret': 'BsIHw9B7',
+      'version': 'v9',
+      'city': '长沙'
+    };
+    final response = await dio.get('https://www.tianqiapi.com/api',queryParameters: params);
+    print(response.data);
+  }
 
   var _themeColor = Colors.teal;
 
