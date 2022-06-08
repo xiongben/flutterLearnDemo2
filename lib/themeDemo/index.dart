@@ -1,3 +1,4 @@
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,28 @@ class _ThemeDemoState extends State<ThemeDemo> {
 
   void getData () async {
     var dio = Dio();
+    dio.options
+    ..headers = {
+      'common-header': 'yyyyyyyy'
+    };
+
+    //拦截器
+    dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (options, handler) {
+        options.headers['token'] = 'xb88888888888888';
+        print(options.headers);
+        return handler.next(options);
+      },
+      onResponse: (response, handler) {
+        return handler.next(response);
+      },
+      onError: (DioError e, handler) {
+        return handler.next(e);
+      }
+    ));
+
+
+
     var params = {
       'appid': 43632387,
       'appsecret': 'BsIHw9B7',
@@ -48,6 +71,11 @@ class _ThemeDemoState extends State<ThemeDemo> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            ElevatedButton(
+                onPressed: () {
+                  getData();
+                },
+                child: Text("get data")),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
