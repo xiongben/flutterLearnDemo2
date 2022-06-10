@@ -8,6 +8,7 @@ import 'package:learn_flutter/demoOne/index.dart';
 import 'package:learn_flutter/demoTwo/index.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:learn_flutter/modelDemo/index.dart';
+import 'package:learn_flutter/pageViewDemo/index.dart';
 import 'package:learn_flutter/pointDemo/index.dart';
 import 'package:learn_flutter/sliverDemo/index.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -56,6 +57,7 @@ class MyApp extends StatelessWidget {
             "water_mark_demo": (context) => WaterMarkDemo(),
             "event_demo": (context) => EventDemo(),
             "theme_demo": (context) => ThemeDemo(),
+            "page_view_demo": (context) => PageViewDemo(),
           },
           home: MyHomePage(title: 'Flutter Demo Home Page'),
         )
@@ -185,6 +187,11 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.pushNamed(context, "theme_demo");
                     },
                     child: Text("Theme model")),
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, "page_view_demo");
+                    },
+                    child: Text("pageView demo")),
               ],
             ),
           ],
